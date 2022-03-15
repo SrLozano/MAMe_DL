@@ -11,6 +11,7 @@ metadata = pd.read_csv("dataset/MAMe_metadata/MAMe_dataset.csv")
 
 print(metadata)
 
+# True if we want the script to sort all the images
 execute_image_sorting = False
 
 if execute_image_sorting:
@@ -30,6 +31,26 @@ if execute_image_sorting:
             if not os.path.exists('dataset/data_256/' + c + i):
                 # Move the image
                 move_image_to_cat = shutil.move(get_image, 'dataset/data_256/' + c)
+
+    classes_names = list(metadata['Medium'].unique())
+
+    for subset in ['train', 'val', 'test']:
+
+        for i in classes_names:
+            os.makedirs(os.path.join(f'dataset/data_256/{subset}/', i))
+
+        for c in classes_names:
+            aux_df = metadata.loc[(metadata['Medium'] == c) & (metadata['Subset'] == subset)]
+            for index, row in aux_df.iterrows():
+
+                # Create path to the image
+                get_image = os.path.join(f'dataset/data_256/{subset}', row['Image file'])
+
+                # If image has not already exist in the new folder create one
+                if not os.path.exists(f'dataset/data_256/{subset}/' + c + '/' + row['Image file']):
+                    # Move the image
+                    move_image_to_cat = shutil.move(get_image, f'dataset/data_256/{subset}/' + c + '/' + row['Image '
+                                                                                                             'file'])
 
 # Create a data generator
 datagen = tf.keras.preprocessing.image.ImageDataGenerator()
