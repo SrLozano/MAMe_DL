@@ -5,6 +5,11 @@ import tensorflow as tf
 import keras
 import pandas as pd
 
+'''from keras.models import Sequential
+from keras.layers import Dense
+
+import matplotlib.pyplot as plt'''
+
 print('Using Keras version', keras.__version__)
 
 metadata = pd.read_csv("dataset/MAMe_metadata/MAMe_dataset.csv")
@@ -62,18 +67,28 @@ val_it = datagen.flow_from_directory('dataset/data_256/val/', class_mode='catego
 # load and iterate test dataset
 test_it = datagen.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
 
-'''path = os.path.join(os.getcwd(), "dataset/")
-'''
-'''os.mkdir('tempDir')
 
-for _, row in metadata.iterrows():
-    file = row['Image file']
-    label = row['Subset']
-    os.replace(os.path.join(os.getcwd(), f'data_256/{file}'), os.path.join(os.getcwd(), f'data_256/{label}/{file}'))'''
+'''# Define the NN architecture
 
-'''tf.keras.utils.image_dataset_from_directory(
-    directory=path,
-    batch_size=32,
-    image_size=(256, 256),
-    labels=tuple(metadata['Medium'])
-)'''
+# Two hidden layers
+model = Sequential()
+model.add(Dense(16, activation='relu', input_shape=(256, 256, 3)))
+model.add(Dense(29, activation=tf.nn.softmax))
+
+# Compile the NN
+model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Start training
+history = model.fit_generator(train_it, steps_per_epoch=16, validation_data=val_it, validation_steps=8)
+
+# Evaluate model
+loss = model.evaluate_generator(test_it, steps=24)
+
+# Summarize history for accuracy
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'val'], loc='upper left')
+plt.show()'''
