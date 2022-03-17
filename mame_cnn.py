@@ -6,11 +6,6 @@ import keras
 import pandas as pd
 import matplotlib.pyplot as plt
 
-'''from keras.models import Sequential
-from keras.layers import Dense
-
-import matplotlib.pyplot as plt'''
-
 print('Using Keras version', keras.__version__)
 
 metadata = pd.read_csv("dataset/MAMe_metadata/MAMe_dataset.csv")
@@ -97,15 +92,13 @@ model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.
 # Fit Network
 history = model.fit_generator(
              train_it,
-             steps_per_epoch=train_it.n,
-             epochs=2,
+             epochs=50,
              validation_data=val_it,
-             validation_steps=val_it.n,
              verbose=2)
 
 # Plot and show results
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
