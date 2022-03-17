@@ -4,6 +4,7 @@ import shutil
 import tensorflow as tf
 import keras
 import pandas as pd
+import matplotlib.pyplot as plt
 
 '''from keras.models import Sequential
 from keras.layers import Dense
@@ -60,31 +61,80 @@ if execute_image_sorting:
 # Create a data generator
 datagen = tf.keras.preprocessing.image.ImageDataGenerator()
 
-# load and iterate training dataset
+# Load and iterate training dataset
 train_it = datagen.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
-# load and iterate validation dataset
+# Load and iterate validation dataset
 val_it = datagen.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
-# load and iterate test dataset
+# Load and iterate test dataset
 test_it = datagen.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
 
 
-'''# Define the NN architecture
+# Define model structure
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),  # Input Shape: 256x256x3
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(29, activation='softmax')  # 29 Possible classes
+])
 
-# Two hidden layers
-model = Sequential()
-model.add(Dense(16, activation='relu', input_shape=(256, 256, 3)))
-model.add(Dense(29, activation=tf.nn.softmax))
 
-# Compile the NN
-model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+# Check model structure
+model.summary()
 
-# Start training
-history = model.fit_generator(train_it, steps_per_epoch=16, validation_data=val_it, validation_steps=8)
 
-# Evaluate model
-loss = model.evaluate_generator(test_it, steps=24)
+# Compile model
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
+              loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Summarize history for accuracy
+
+# Fit Network
+history = model.fit_generator(
+             train_it,
+             steps_per_epoch=train_it.n,
+             epochs=2,
+             validation_data=val_it,
+             validation_steps=val_it.n,
+             verbose=2)
+
+# Plot and show results
+acc = history.history['acc']
+val_acc = history.history['val_acc']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(acc) + 1, 1)
+
+plt.plot(epochs, acc, 'r--', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.ylabel('acc')
+plt.xlabel('epochs')
+
+plt.legend()
+plt.figure()
+
+plt.plot(epochs, loss, 'r--')
+plt.plot(epochs, val_loss,  'b')
+plt.title('Training and validation loss')
+plt.ylabel('acc')
+plt.xlabel('epochs')
+
+plt.legend()
+plt.figure()
+
+# Test model
+test_lost, test_acc = model.evaluate_generator(test_it)
+print("Test Accuracy:", test_acc)
+
+
+'''# Summarize history for accuracy
 plt.plot(history.history['accuracy'])
 plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
