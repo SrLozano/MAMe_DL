@@ -9,16 +9,32 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 
-'''def sort_dataset_folder(execute_image_sorting):
+def sort_dataset_folder(execute_image_sorting_bool):
     """
     This function sorts the dataset folder so that it can be read using generators.Thus, the folder structure is:
-
-    :param execute_image_sorting: boolean to control whether the dataset folder gets sorted
+        data_256
+        ├── test
+        │   ├── Bronze
+        │   │   └── 1914.572.jpg
+        │   └── Ceramic
+        │       └── 1914.593.jpg
+        ├── train
+        │   ├── Bronze
+        │   │   └── 1914.132.jpg
+        │   └── Ceramic
+        │       └── 1914.456.jpg
+        ├── val
+        │   ├── ├── Bronze
+        │   │   └── 1914.383.jpg
+        │   └── Ceramic
+        │       └── 1914.537.jpg
+    :param execute_image_sorting_bool: boolean to control whether the dataset folder gets sorted
     :return:
     """
-    # True if we want the script to sort all the images
 
-    if execute_image_sorting:
+    metadata = pd.read_csv("dataset/MAMe_metadata/MAMe_dataset.csv")
+
+    if execute_image_sorting_bool:
 
         subset_names = list(metadata['Subset'].unique())
 
@@ -58,76 +74,104 @@ import matplotlib.pyplot as plt
                                                                                                       'file'])
 
 
-if __name__ == "main":
+def load_dataset():
+    """
+    This function loads the dataset from dataset folder
+    :return train_it_ret: Training generator
+    :return val_it_ret: Validation generator
+    :return test_it_ret: Testing generator
+    """
+
+    # Create a data generator
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator()
+
+    # Load and iterate training dataset
+    train_it_ret = datagen.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
+    # Load and iterate validation dataset
+    val_it_ret = datagen.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
+    # Load and iterate test dataset
+    test_it_ret = datagen.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
+
+    return train_it_ret, val_it_ret, test_it_ret
+
+
+def create_plots(history_plot):
+    """
+    This functions creates the plots accuracy and loss evolution in training and validation
+    :param history_plot: Record of training loss values and metrics values at successive epochs
+    :return: It saves the accuracy and loss plots
+    """
+    # Accuracy plot
+    plt.plot(history_plot.history['accuracy'])
+    plt.plot(history_plot.history['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.savefig('MAMe_accuracy.pdf')
+    plt.close()
+
+    # Loss plot
+    plt.plot(history_plot.history['loss'])
+    plt.plot(history_plot.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.savefig('MAMe_loss.pdf')
+
+
+if __name__ == "__main__":
+
     print("Hello")
-'''
 
-matplotlib.use('Agg')  # Select the backend used for rendering and GUI integration.
+    # Variable declaration
+    execute_image_sorting = False
+    verbose_level = 2  # 0: Silent, 1: Minimum detail, 2: Maximum detail
 
-print('Using Keras version', keras.__version__)
+    matplotlib.use('Agg')  # Select the backend used for rendering and GUI integration.
+    if verbose_level == 2:
+        print('Using Keras version', keras.__version__)  # Display Keras version
 
-metadata = pd.read_csv("dataset/MAMe_metadata/MAMe_dataset.csv")
+    # Sort dataset so that it can be read with image generators
+    sort_dataset_folder(execute_image_sorting)
 
-print(metadata)
+    # Load dataset
+    train_it, val_it, test_it = load_dataset()
 
-# Create a data generator
-datagen = tf.keras.preprocessing.image.ImageDataGenerator()
+    # Define model structure
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),  # Input Shape: 256x256x3
+        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(512, activation='relu'),
+        tf.keras.layers.Dense(29, activation='softmax')  # 29 Possible classes
+    ])
 
-# Load and iterate training dataset
-train_it = datagen.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
-# Load and iterate validation dataset
-val_it = datagen.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
-# Load and iterate test dataset
-test_it = datagen.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
+    if verbose_level == 2:
+        model.summary()  # Check model structure
 
-# Define model structure
-model = tf.keras.models.Sequential([
-    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),  # Input Shape: 256x256x3
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(512, activation='relu'),
-    tf.keras.layers.Dense(29, activation='softmax')  # 29 Possible classes
-])
+    # Compile model
+    model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
+                  loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Check model structure
-model.summary()
+    # Fit Network
+    history = model.fit(
+        x=train_it,
+        epochs=10,
+        validation_data=val_it,
+        verbose=2)
 
-# Compile model
-model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
-              loss='categorical_crossentropy', metrics=['accuracy'])
+    # Test model
+    test_lost, test_acc = model.evaluate(test_it)
+    if verbose_level >= 1:
+        print("Test Accuracy:", test_acc)
 
-# Fit Network
-history = model.fit(
-    x=train_it,
-    epochs=10,
-    validation_data=val_it,
-    verbose=2)
-
-# Accuracy plot
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.savefig('MAMe_accuracy.pdf')
-plt.close()
-
-# Loss plot
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.savefig('MAMe_loss.pdf')
-
-# Test model
-test_lost, test_acc = model.evaluate(test_it)
-print("Test Accuracy:", test_acc)
+    # Create plots
+    create_plots(history)
