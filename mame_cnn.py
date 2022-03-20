@@ -12,6 +12,8 @@ import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 
+import network
+
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
     """
@@ -141,8 +143,9 @@ def create_confusion_matrix(model_cf, test_generator, metadata_info):
     # target_names = sorted(list(metadata_info['Medium'].unique()))
     cf = confusion_matrix(np.argmax(test_generator, axis=1), y_pred)
     plt.figure(figsize=(15, 12))
-    sns.heatmap(cf, annot=True, cmap="Blues")
-    plt.savefig('MAMe_confusion_matrix.pdf')
+    heatmap = sns.heatmap(cf, annot=True, cmap="Blues")
+    fig = heatmap.get_figure()
+    fig.savefig('MAMe_confusion_matrix.pdf')
 
 
 if __name__ == "__main__":
@@ -166,38 +169,18 @@ if __name__ == "__main__":
     train_it, val_it, test_it = load_dataset()
 
     # Define model structure
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),  # Input Shape: 256x256x3
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(2, 2),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512, activation='relu'),
-        tf.keras.layers.Dense(29, activation='softmax')  # 29 Possible classes
-    ])
+    network = network.CNN(0.001, 0, "SGD", 'categorical_crossentropy')
 
     if verbose_level == 2:
-        model.summary()  # Check model structure
-
-    # Compile model
-    model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
-                  loss='categorical_crossentropy', metrics=['accuracy'])
+        network.model.summary()  # Check model structure
 
     # Fit network
-    history = model.fit(
-        x=train_it,
-        epochs=3,
-        validation_data=val_it,
-        verbose=0)
+    history = network.fit(train_it, val_it, 3)
 
-    # Test model
-    test_lost, test_acc = model.evaluate(test_it)
-    if verbose_level >= 1:
-        print("Test Accuracy:", test_acc)
+    # Test model TODO: Doesn't work
+    # test_lost, test_acc = network.test(test_it)
+    # if verbose_level >= 1:
+    # print("Test Accuracy:", test_acc)
 
     # Create plots
     create_plots(history)
@@ -216,7 +199,7 @@ if __name__ == "__main__":
     f.write(classification_report(np.argmax(test_it, axis=1), y_pred, target_names=target_names))
     f.close()'''
 
-    print("Confusion Matrix")
+    # sprint("Confusion Matrix")
 
-    '''# Plot confusion  matrix
-    create_confusion_matrix(model, test_it, metadata)'''
+    # Plot confusion  matrix
+    # create_confusion_matrix(model, test_it, metadata)
