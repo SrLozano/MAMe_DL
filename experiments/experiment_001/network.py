@@ -14,16 +14,12 @@ class CNN:
 
     def generate_model(self):
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)))  # Shape: 256x256x3
+        model.add(tf.keras.layers.Conv2D(8, (3, 3), activation='relu', input_shape=(256, 256, 3)))  # Shape: 256x256x3
         model.add(tf.keras.layers.MaxPooling2D(2, 2))
-        model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
-        model.add(tf.keras.layers.MaxPooling2D(2, 2))
-        model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
-        model.add(tf.keras.layers.MaxPooling2D(2, 2))
-        model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+        model.add(tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(256, 256, 3)))  # Shape: 256x256x3
         model.add(tf.keras.layers.MaxPooling2D(2, 2))
         model.add(tf.keras.layers.Flatten())
-        model.add(tf.keras.layers.Dense(512, activation='relu'))
+        model.add(tf.keras.layers.Dense(128, activation='relu'))
         model.add(tf.keras.layers.Dense(29, activation='softmax'))  # 29 Possible classes
 
         if self.verbose == 2:

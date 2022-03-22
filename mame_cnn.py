@@ -9,10 +9,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import confusion_matrix
 import numpy as np
 
-import network
+from experiments.experiment_001 import network
 
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
@@ -88,7 +88,7 @@ def load_dataset():
     """
 
     # Create a data generator
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator()
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0) #TODO: check running time
 
     # Load and iterate training dataset
     train_it_ret = datagen.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
@@ -149,9 +149,7 @@ def create_confusion_matrix(model_cf, test_generator, metadata_info):
 
 
 if __name__ == "__main__":
-
     print("Hello")
-
     # Variable declaration
     execute_image_sorting = False
     verbose_level = 1  # 0: Silent, 1: Minimum detail, 2: Maximum detail
@@ -169,18 +167,21 @@ if __name__ == "__main__":
     train_it, val_it, test_it = load_dataset()
 
     # Define model structure
-    network = network.CNN(0.001, 0, "SGD", 'categorical_crossentropy')
+    network = network.CNN(learning_rate=0.001, verbose=0, optimizer="SGD", loss='categorical_crossentropy')
 
     if verbose_level == 2:
         network.model.summary()  # Check model structure
 
     # Fit network
-    history = network.fit(train_it, val_it, 3)
+    history = network.fit(train_it, val_it, epochs=15)
 
-    # Test model TODO: Doesn't work
-    # test_lost, test_acc = network.test(test_it)
-    # if verbose_level >= 1:
-    # print("Test Accuracy:", test_acc)
+    # Test model
+    """
+    test_loss, test_acc = network.test(test_it)
+    if verbose_level >= 1:
+        print("Test Accuracy: ", test_acc)
+        print("Test loss: ", test_loss)
+    """ #We leave it comented until we have the final network
 
     # Create plots
     create_plots(history)
@@ -188,7 +189,7 @@ if __name__ == "__main__":
     print("Create files")
     '''
     # Create txt file with important information about network performance
-    id_experiment = "000_experiment"
+    id_experiment = "experiment_000"
     f = open(f"{id_experiment}.txt", "w+")
     f.write(f"Experiment {id_experiment} \n Test Accuracy: {test_acc}")
 
@@ -199,7 +200,7 @@ if __name__ == "__main__":
     f.write(classification_report(np.argmax(test_it, axis=1), y_pred, target_names=target_names))
     f.close()'''
 
-    # sprint("Confusion Matrix")
+    print("Confusion Matrix")
 
     # Plot confusion  matrix
-    # create_confusion_matrix(model, test_it, metadata)
+    create_confusion_matrix(network.model, test_it, metadata) #TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final

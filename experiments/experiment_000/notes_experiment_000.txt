@@ -1,0 +1,19 @@
+Notas:
+- Primera prueba con una red simple.
+- El pipeline de datos está hecho.
+- Se normalizan las imágenes.
+- La red es sencilla, con:
+    - Una primera capa de convolución de (3, 3) con 32 filtros
+    - Capa de Pooling (2, 2)
+    - MPL de 512 - 29
+
+Parámetros:
+- Learning_rate: 0.001
+
+Análisis de resultados:
+Se observa un overfitting claro al contarse con un aumento de accuracy de train que no va acompañado de un aumento en
+validation.
+
+Ideas de mejora:
+    - Bajar la complejidad de la red (i.e. reducir el número de filtros) estableciendo la primera capa con 8, una
+    segunda con 16 y el MLP con 128. Se espera obtener un menor overfitting temprano.
