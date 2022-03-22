@@ -24,7 +24,6 @@ class CNN:
         model.add(BatchNormalization())
         model.add(tf.keras.layers.MaxPooling2D(2, 2))
         model.add(tf.keras.layers.Flatten())
-        model.add(tf.keras.layers.Dense(128, activation='relu'))
         model.add(tf.keras.layers.Dense(29, activation='softmax'))  # 29 Possible classes
 
         if self.verbose == 2:

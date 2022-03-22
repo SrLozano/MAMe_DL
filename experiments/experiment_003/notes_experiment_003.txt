@@ -1,0 +1,11 @@
+Notas:
+- Se borra la primera capa del MLP para comprobar su efecto.
+
+Parámetros:
+- Learning_rate: 0.001
+
+Análisis de resultados:
+
+
+Ideas de mejora:
+- Data augmentation para luchar contra el overfitting.

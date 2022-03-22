@@ -8,8 +8,8 @@ Parámetros:
 Análisis de resultados:
 Se observa que el overfitting sigue muy presente. De hecho el error de validación empieza a subir incluso antes que en
 el test 000. Una posible explicación a este fenómeno es que se cuente con demasiado pocas imgénes de entrenamiento.
-Dado que 
+Dado que se cuenta con 700 para cada una de las clases parece evidente que no es suficiente para asegurar que la red
+pueda generalizar adecuadamente
 
 Ideas de mejora:
-    - Bajar la complejidad de la red (i.e. reducir el número de filtros) estableciendo la primera capa con 8, una
-    segunda con 16 y el MLP con 128. Se espera obtener un menor overfitting temprano.
+    - Batch normalization. Mejora accuracy y tiempos de ejecución.
