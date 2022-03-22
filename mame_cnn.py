@@ -12,7 +12,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-from experiments.experiment_001 import network
+from experiments.experiment_002 import network
 
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
