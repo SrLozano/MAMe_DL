@@ -12,7 +12,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-from experiments.experiment_003 import network
+from experiments.experiment_004 import network
 
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
@@ -79,7 +79,7 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
                                                                                                       'file'])
 
 
-def load_dataset():
+def load_dataset(data_augmentation=False):
     """
     This function loads the dataset from dataset folder
     :return train_it_ret: Training generator
@@ -88,14 +88,17 @@ def load_dataset():
     """
 
     # Create a data generator
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0) #TODO: check running time
+    datagen_train_args = dict(rescale=1.0/255.0, rotation_range=20, width_shift_range=0.1, height_shift_range=0.1,
+                              zoom_range=0.2) if data_augmentation else dict(rescale=1.0/255.0)
+    datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(datagen_train_args) #TODO: check running time
+    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
 
     # Load and iterate training dataset
-    train_it_ret = datagen.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
+    train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
     # Load and iterate validation dataset
-    val_it_ret = datagen.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
+    val_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
     # Load and iterate test dataset
-    test_it_ret = datagen.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
+    test_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
 
     return train_it_ret, val_it_ret, test_it_ret
 
@@ -164,7 +167,7 @@ if __name__ == "__main__":
     sort_dataset_folder(execute_image_sorting, metadata)
 
     # Load dataset
-    train_it, val_it, test_it = load_dataset()
+    train_it, val_it, test_it = load_dataset(network.data_augmentation)
 
     # Define model structure
     network = network.CNN(learning_rate=0.001, verbose=0, optimizer="SGD", loss='categorical_crossentropy')
