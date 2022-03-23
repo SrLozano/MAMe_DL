@@ -82,16 +82,21 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
 def load_dataset(data_augmentation=False):
     """
     This function loads the dataset from dataset folder
+    TODO: Parameter description missing
     :return train_it_ret: Training generator
     :return val_it_ret: Validation generator
     :return test_it_ret: Testing generator
     """
 
     # Create a data generator
-    datagen_train_args = dict(rescale=1.0/255.0, rotation_range=20, width_shift_range=0.1, height_shift_range=0.1,
-                              zoom_range=0.2) if data_augmentation else dict(rescale=1.0/255.0)
-    datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(datagen_train_args) #TODO: check running time
-    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
+    if data_augmentation:
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0, rotation_range=20,
+                                                                        width_shift_range=0.1, height_shift_range=0.1,
+                                                                        zoom_range=0.2,
+                                                                        horizontal_flip=True)  # TODO: check running time
+    else:
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
+    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
 
     # Load and iterate training dataset
     train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
@@ -191,6 +196,7 @@ if __name__ == "__main__":
 
     print("Create files")
     '''
+    # TODO: Guardar tiempo de entrenamiento en txt tambien
     # Create txt file with important information about network performance
     id_experiment = "experiment_000"
     f = open(f"{id_experiment}.txt", "w+")
@@ -206,4 +212,4 @@ if __name__ == "__main__":
     print("Confusion Matrix")
 
     # Plot confusion  matrix
-    create_confusion_matrix(network.model, test_it, metadata) #TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final
+    create_confusion_matrix(network.model, test_it, metadata) # TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final

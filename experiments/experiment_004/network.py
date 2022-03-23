@@ -5,6 +5,7 @@ import tensorflow as tf
 from keras.layers import BatchNormalization
 data_augmentation = True
 
+
 class CNN:
     def __init__(self, learning_rate, verbose, optimizer, loss):
         # Add the needed parameters
