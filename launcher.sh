@@ -2,7 +2,7 @@
 
 #SBATCH --job-name="mame_cnn"
 
-#SBATCH --qos=debug
+#SBATCH --qos=training
 
 #SBATCH --workdir=.
 

@@ -9,7 +9,7 @@ Parámetros:
 
 
 Análisis de resultados:
-
+Ya no se produce overfitting, de hecho se produce underfitting y por lo tanto se decide probar con una arquitectura más compleja (mayo número de layers). Por supuesto además debemos entrenar durante más epochs.
 
 Ideas de mejora:
 - Regularizers --> L2

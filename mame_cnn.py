@@ -12,8 +12,8 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-from experiments.experiment_004 import network
-
+from experiments.experiment_005 import network
+exp="experiment_006"
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
     """
@@ -121,7 +121,7 @@ def create_plots(history_plot):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('MAMe_accuracy.pdf')
+    plt.savefig(f'experiments/{exp}/MAMe_accuracy.pdf')
     plt.close()
 
     # Loss plot
@@ -131,7 +131,7 @@ def create_plots(history_plot):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('MAMe_loss.pdf')
+    plt.savefig(f'experiments/{exp}/MAMe_loss.pdf')
 
 
 def create_confusion_matrix(model_cf, test_generator, metadata_info):
