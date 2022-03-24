@@ -1,0 +1,16 @@
+Notas:
+ - Con RMsprop
+
+Parámetros:
+data_augmentation = False
+batch_size = 64
+lr = 0.01
+dropout = True
+epochs = 14
+optimizer = "RMSprop" #with lr decay
+
+Análisis de resultados:
+Peor que con SGD
+
+Ideas de mejora:
+¿?

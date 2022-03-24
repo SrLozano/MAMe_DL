@@ -9,9 +9,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.metrics import confusion_matrix
 import numpy as np
 
+from sklearn.metrics import classification_report, confusion_matrix
+
+import time
 
 from experiments.experiment_010 import network
 exp="experiment_010"
@@ -89,7 +91,7 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
 def load_dataset(data_augmentation=False):
     """
     This function loads the dataset from dataset folder
-    TODO: Parameter description missing
+    :parameter data_augmentation: Boolean indicating whether to include or not data augmentation
     :return train_it_ret: Training generator
     :return val_it_ret: Validation generator
     :return test_it_ret: Testing generator
@@ -100,7 +102,7 @@ def load_dataset(data_augmentation=False):
         datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0, rotation_range=20,
                                                                         width_shift_range=0.1, height_shift_range=0.1,
                                                                         zoom_range=0.2,
-                                                                        horizontal_flip=True)  # TODO: check running time
+                                                                        horizontal_flip=True)
     else:
         datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
     datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
@@ -124,7 +126,7 @@ def create_plots(history_plot):
     # Accuracy plot
     plt.plot(history_plot.history['accuracy'])
     plt.plot(history_plot.history['val_accuracy'])
-    plt.title('model accuracy')
+    plt.title(f'model {exp} accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
@@ -134,12 +136,44 @@ def create_plots(history_plot):
     # Loss plot
     plt.plot(history_plot.history['loss'])
     plt.plot(history_plot.history['val_loss'])
-    plt.title('model loss')
+    plt.title(f'model {exp} loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
     plt.savefig(f'experiments/{exp}/MAMe_loss.pdf')
 
+
+def evaluate_model(model, test_generator):
+    """
+    This functions creates interesting metrics to check model performance
+    :param model:  Model to evaluate
+    :param test_generator: Test generator
+    :return: It saves the accuracy and loss plots
+    """
+
+    # Evaluate the model
+    test_generator.reset()
+    score = model.evaluate(test_generator, verbose=0)
+
+    f = open(f'experiments/{exp}/test_info.txt', "a+")
+    f.write(f"\t - Loss: {str(score[0])} \n \t - Accuracy on test: {str(score[1])}\n")
+
+
+    # Confusion Matrix (validation subset)
+    test_generator.reset()
+    pred = model.predict(test_generator, verbose=0)
+
+    # Assign most probable label
+    predicted_class_indices = np.argmax(pred, axis=1)
+
+    # Get class labels
+    labels = (test_generator.class_indices)
+    target_names = labels.keys()
+
+    # Plot statistics
+    f.write("\n")
+    f.write(classification_report(test_generator.classes, predicted_class_indices, target_names=target_names))
+    f.close()
 
 def create_confusion_matrix(model_cf, test_generator, metadata_info):
     """
@@ -164,9 +198,9 @@ def create_confusion_matrix(model_cf, test_generator, metadata_info):
 
 
 if __name__ == "__main__":
-    print("Hello")
+
     # Variable declaration
-    execute_image_sorting = True
+    execute_image_sorting = False
     verbose_level = 1  # 0: Silent, 1: Minimum detail, 2: Maximum detail
 
     matplotlib.use('Agg')  # Select the backend used for rendering and GUI integration.
@@ -187,36 +221,26 @@ if __name__ == "__main__":
     if verbose_level == 2:
         network.model.summary()  # Check model structure
 
+    # Measure elapsed time
+    start = time.time()
+
     # Fit network
     history = network.fit(train_it, val_it, epochs=epochs)
 
-    # Test model
-    """
-    test_loss, test_acc = network.test(test_it)
-    if verbose_level >= 1:
-        print("Test Accuracy: ", test_acc)
-        print("Test loss: ", test_loss)
-    """ #We leave it comented until we have the final network
+    # Measure elapsed time
+    end = time.time()
+    time_taken = (((end - start)/60)/60)
 
     # Create plots
     create_plots(history)
 
-    print("Create files")
-    '''
-    # TODO: Guardar tiempo de entrenamiento en txt tambien
     # Create txt file with important information about network performance
-    id_experiment = "experiment_000"
-    f = open(f"{id_experiment}.txt", "w+")
-    f.write(f"Experiment {id_experiment} \n Test Accuracy: {test_acc}")
+    f = open(f'experiments/{exp}/test_info.txt', "w+")
+    f.write(f"Experiment {exp} \n \t - Time elapsed: {time_taken} \n")
+    f.close()
 
-    target_names = sorted(list(metadata['Medium'].unique()))
-    y_pred_aux = model.predict(test_it)
-    y_pred = np.argmax(y_pred_aux, axis=1)
-
-    f.write(classification_report(np.argmax(test_it, axis=1), y_pred, target_names=target_names))
-    f.close()'''
-
-    print("Confusion Matrix")
+    # Evaluate model
+    evaluate_model(network.model, test_it)
 
     # Plot confusion  matrix
-    create_confusion_matrix(network.model, test_it, metadata) # TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final
+    # create_confusion_matrix(network.model, test_it, metadata) # TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final
