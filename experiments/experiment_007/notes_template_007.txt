@@ -1,0 +1,11 @@
+Notas:we increased the complexity to 4 layers: 32,64,128,256 filters, respectively.  No dense layer before softmax.
+
+
+Parámetros: epochs = 15, batch_size = 32, learning_rate = 0.01. No lr decay.
+
+
+Análisis de resultados: Low accuracy of the validation set (0.5), unstable result and a little bit of overfitting.
+
+
+Ideas de mejora: Add learning rate decay. Regularizers.
+
