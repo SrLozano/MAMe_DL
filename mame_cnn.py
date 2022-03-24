@@ -69,7 +69,7 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
         for subset in ['train', 'val', 'test']:
 
             for i in classes_names:
-                os.makedirs(os.path.join(f'dataset/data_256/{subset}/', i))
+                os.makedirs(os.path.join(f'dataset/data_256/{subset}/', i.strip()))
 
             for c in classes_names:
                 aux_df = metadata_info.loc[(metadata_info['Medium'] == c) & (metadata_info['Subset'] == subset)]
@@ -78,11 +78,11 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
                     # Create path to the image
                     get_image = os.path.join(f'dataset/data_256/{subset}', row['Image file'])
 
-                    # If image has not already exist in the new folder create one
-                    if not os.path.exists(f'dataset/data_256/{subset}/' + c + '/' + row['Image file']):
+                    # If image does not already exist in the new folder create one
+                    if not os.path.exists(f'dataset/data_256/{subset}/' + c.strip() + '/' + row['Image file']):
                         # Move the image
                         move_image_to_cat = shutil.move(get_image,
-                                                        f'dataset/data_256/{subset}/' + c + '/' + row['Image '
+                                                        f'dataset/data_256/{subset}/' + c.strip() + '/' + row['Image '
                                                                                                       'file'])
 
 
@@ -166,7 +166,7 @@ def create_confusion_matrix(model_cf, test_generator, metadata_info):
 if __name__ == "__main__":
     print("Hello")
     # Variable declaration
-    execute_image_sorting = False
+    execute_image_sorting = True
     verbose_level = 1  # 0: Silent, 1: Minimum detail, 2: Maximum detail
 
     matplotlib.use('Agg')  # Select the backend used for rendering and GUI integration.
