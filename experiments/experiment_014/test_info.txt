@@ -1,0 +1,40 @@
+Experiment experiment_014 
+ 	 - Time elapsed: 0.8391770308547549 
+	 - Loss: 3.114309549331665 
+ 	 - Accuracy on test: 0.3551127314567566
+
+                        precision    recall  f1-score   support
+
+    Albumen photograph       0.04      0.04      0.04       700
+                Bronze       0.04      0.14      0.07       700
+               Ceramic       0.05      0.06      0.06       700
+                  Clay       0.03      0.06      0.04       313
+             Engraving       0.05      0.03      0.04       700
+               Etching       0.04      0.01      0.02       700
+               Faience       0.04      0.03      0.04       700
+                 Glass       0.05      0.06      0.05       700
+                  Gold       0.03      0.01      0.02       700
+              Graphite       0.02      0.02      0.02       188
+Hand-colored engraving       0.01      0.00      0.00       328
+  Hand-colored etching       0.05      0.03      0.03       584
+                  Iron       0.00      0.01      0.01       265
+                 Ivory       0.02      0.01      0.02       572
+             Limestone       0.04      0.02      0.03       700
+            Lithograph       0.07      0.05      0.06       700
+                Marble       0.02      0.05      0.03       257
+         Oil on canvas       0.04      0.03      0.03       700
+     Pen and brown ink       0.03      0.01      0.02       286
+      Polychromed wood       0.03      0.09      0.04       375
+             Porcelain       0.06      0.08      0.07       700
+ Silk and metal thread       0.01      0.02      0.02        95
+                Silver       0.04      0.03      0.04       700
+                 Steel       0.01      0.03      0.01       133
+                  Wood       0.06      0.04      0.05       700
+        Wood engraving       0.01      0.02      0.02       361
+             Woodblock       0.06      0.04      0.05       700
+               Woodcut       0.04      0.01      0.02       700
+         Woven fabric        0.06      0.03      0.04       700
+
+              accuracy                           0.04     15657
+             macro avg       0.04      0.04      0.03     15657
+          weighted avg       0.04      0.04      0.04     15657

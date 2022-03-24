@@ -15,8 +15,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 import time
 
-from experiments.experiment_010 import network
-exp="experiment_010"
+from experiments.experiment_016 import network
+exp="experiment_016"
 
 data_augmentation = network.data_augmentation
 batch_size = network.batch_size
@@ -99,13 +99,15 @@ def load_dataset(data_augmentation=False):
 
     # Create a data generator
     if data_augmentation:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0, rotation_range=20,
-                                                                        width_shift_range=0.1, height_shift_range=0.1,
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0,
+                                                                        rotation_range=20,
+                                                                        width_shift_range=0.1,
+                                                                        height_shift_range=0.1,
                                                                         zoom_range=0.2,
                                                                         horizontal_flip=True)
     else:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
-    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
+    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
 
     # Load and iterate training dataset
     train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=batch_size)

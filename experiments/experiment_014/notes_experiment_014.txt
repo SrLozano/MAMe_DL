@@ -1,0 +1,20 @@
+Notas:
+Introducción de Adam como optimizer
+
+Parámetros:
+
+data_augmentation = False
+batch_size = 64
+lr = 0.01
+dropout = True
+epochs = 25
+optimizer = "Adam"  # with lr decay
+
+Análisis de resultados:
+Hay underfitting
+
+Ideas de mejora:
+
+- Data Augmentation
+- Mayor batch size
+- Mayor número de epochs
