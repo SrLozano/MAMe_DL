@@ -1,0 +1,16 @@
+Notas:
+- Data augmentation con un mayor número de capas. 64 -> 128 -> 256 -> 512 + MLP (512 - 1).
+
+Parámetros:
+- Learning Rate 0.001
+
+Análisis de resultados:
+La intención es comprobar la tendecia de la red mediante una prueba rápida (10 epochs). Se puede apreciar cierto inicio
+de overfitting y una gran inestabilidad de la validation accuracy. Por lo tanto se decide ampliar el batch size puesto
+que es muy pequeño.
+
+Ideas de mejora:
+- Aumento del batch size
+- Dropout
+- Aumento del número de capas (complejidad de la red)
+

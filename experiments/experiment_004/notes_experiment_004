@@ -1,10 +1,8 @@
 Notas:
-
 - Hemos añadido data augmentation sencilla debido al overfitting. Rotation simple, zooms i shifts.
 
 
 Parámetros:
-
 - En la función load_dataset() pasamos un parametro bool (data_augmentation). Si true, aumentamos datos.
 
 

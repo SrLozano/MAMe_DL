@@ -8,4 +8,4 @@ Análisis de resultados:
 Alto overfitting.
 
 Ideas de mejora:
-Eliminar el la primera capa del MLP para comprobar su efecto.
+- Eliminar el la primera capa del MLP para comprobar su efecto.

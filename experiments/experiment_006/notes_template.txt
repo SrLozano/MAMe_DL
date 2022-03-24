@@ -1,5 +1,4 @@
 Notas:
-
 - Hemos cambiado el número de filtros (de 8 a 64 y de 16 a 128) para poder representar más características y que no
 tengamos underfitting.
 
@@ -7,7 +6,9 @@ Parámetros:
 - Learning Rate 0.001
 
 Análisis de resultados:
-
+ - Se hace necesario aumentar la complejidad de la red para seguir aumentando la accuracy.
 
 Ideas de mejora:
+- Aumento de la complejidad de la red (más capas y filtros).
+- Batch size más grande para poder limitar la inestabilidad de validation accuracy.
 

@@ -12,8 +12,9 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-from experiments.experiment_007 import network
-exp="experiment_007"
+
+from experiments.experiment_010 import network
+exp="experiment_010"
 
 data_augmentation = network.data_augmentation
 batch_size = network.batch_size
