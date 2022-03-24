@@ -12,8 +12,14 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-from experiments.experiment_005 import network
-exp="experiment_006"
+from experiments.experiment_007 import network
+exp="experiment_007"
+
+data_augmentation = network.data_augmentation
+batch_size = network.batch_size
+learning_rate = network.lr
+epochs = network.epochs
+optimizer = network.optimizer
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
     """
@@ -99,11 +105,11 @@ def load_dataset(data_augmentation=False):
     datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
 
     # Load and iterate training dataset
-    train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=32)
+    train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=batch_size)
     # Load and iterate validation dataset
-    val_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=32)
+    val_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=batch_size)
     # Load and iterate test dataset
-    test_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=32)
+    test_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=batch_size)
 
     return train_it_ret, val_it_ret, test_it_ret
 
@@ -172,16 +178,16 @@ if __name__ == "__main__":
     sort_dataset_folder(execute_image_sorting, metadata)
 
     # Load dataset
-    train_it, val_it, test_it = load_dataset(network.data_augmentation)
+    train_it, val_it, test_it = load_dataset(data_augmentation)
 
     # Define model structure
-    network = network.CNN(learning_rate=0.001, verbose=0, optimizer="SGD", loss='categorical_crossentropy')
+    network = network.CNN(learning_rate=learning_rate, verbose=0, optimizer=optimizer, loss='categorical_crossentropy')
 
     if verbose_level == 2:
         network.model.summary()  # Check model structure
 
     # Fit network
-    history = network.fit(train_it, val_it, epochs=15)
+    history = network.fit(train_it, val_it, epochs=epochs)
 
     # Test model
     """
