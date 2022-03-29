@@ -1,0 +1,1 @@
+Igual, pero le subiré el batch size a 128

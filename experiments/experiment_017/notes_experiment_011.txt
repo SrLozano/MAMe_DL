@@ -1,0 +1,11 @@
+Notas: same arquitecture than in exp 9. We added regularizers L2 to reduce overfitting. 
+
+
+Parámetros: dropout=True, data_aug = False, lr = 0.01 (might tune it in further experiments), weight decay (regularizers) = 1e-4, lr_decay = True. Optimizer = SGD.
+
+
+Análisis de resultados:
+
+
+Ideas de mejora:
+

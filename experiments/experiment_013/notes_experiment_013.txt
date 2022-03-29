@@ -1,0 +1,12 @@
+Notas: new layer (5) with regularizers. 
+
+
+Parámetros: batch_size = 64, lr = 0.01, epochs = 30, data_aug = False, regularizers = True.
+
+
+Análisis de resultados: still so much overfitting.
+
+
+Ideas de mejora: no me quedaaaan más ideas SOS xddddd
+Aun así le quito la última layer pk no hace na, y pa que no haga na pues fuera, a molestar a otra parte
+

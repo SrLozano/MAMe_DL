@@ -1,0 +1,1 @@
+Igual q el anterior pero le meteré data augmentation a ver q se cuece.
