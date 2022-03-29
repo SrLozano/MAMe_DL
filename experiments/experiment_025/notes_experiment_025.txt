@@ -1,0 +1,1 @@
+Empeoramiento al usar batch normalization true.

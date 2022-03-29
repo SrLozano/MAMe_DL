@@ -1,0 +1,4 @@
+Global Average Pooling obtiene mucha mejora en lo referente a la inestabilidad observada a lo largo de todos los
+anteriores experimentos.
+
+Probamos menor batch size -> Reducción de overfitting

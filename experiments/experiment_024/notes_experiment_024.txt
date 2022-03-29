@@ -1,0 +1,1 @@
+Mejora respecto al experiment 24 debido a una rebaja del batch size.
