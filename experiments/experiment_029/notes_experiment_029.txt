@@ -1,0 +1,5 @@
+accuracy: 0,7600; notas: Added more complex MLP after Global Average Pooling.
+
+We still have a great overfitting.
+
+Some additional experiments have been done to

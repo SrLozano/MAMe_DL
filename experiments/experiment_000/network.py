@@ -1,5 +1,7 @@
 import tensorflow as tf
+
 data_augmentation = False
+
 
 # Variable declaration
 class CNN:
