@@ -1,17 +1,15 @@
 import tensorflow as tf
-import time
 from keras.layers import BatchNormalization
 from keras.layers import GlobalMaxPooling2D
-from keras.regularizers import l2
 
 # Variable declaration
-data_augmentation = False  # leave it to false
+data_augmentation = False
 batch_size = 128
 batch_normalization = False
 lr = 0.001
 dropout = True
 dropout_perc = 0.1
-epochs = 35
+epochs = 40
 optimizer = "Adam"
 complexity = 'low'
 
@@ -70,19 +68,6 @@ class CNN:
             model.add(tf.keras.layers.Dropout(dropout_perc))
 
         # LAYER 4
-        model.add(tf.keras.layers.Conv2D(256, (3, 3), activation='relu', padding='same'))
-        if batch_normalization:
-            model.add(BatchNormalization())
-        model.add(tf.keras.layers.MaxPooling2D(2, 2))
-        if complexity == 'high':
-            model.add(tf.keras.layers.Conv2D(256, (3, 3), activation='relu', padding='same'))
-            if batch_normalization:
-                model.add(BatchNormalization())
-            model.add(tf.keras.layers.MaxPooling2D(2, 2))
-        if dropout:
-            model.add(tf.keras.layers.Dropout(dropout_perc))
-
-        # LAYER 5
         model.add(tf.keras.layers.Conv2D(256, (3, 3), activation='relu', padding='same'))
         if batch_normalization:
             model.add(BatchNormalization())

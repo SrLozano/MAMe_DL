@@ -15,8 +15,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 import time
 
-from experiments.experiment_016 import network
-exp="experiment_016"
+from experiments.experiment_030 import network
+exp="experiment_030"
 
 data_augmentation = network.data_augmentation
 batch_size = network.batch_size
@@ -110,11 +110,14 @@ def load_dataset(data_augmentation=False):
     datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
 
     # Load and iterate training dataset
-    train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical', batch_size=batch_size)
+    train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical',
+                                                     batch_size=batch_size)
     # Load and iterate validation dataset
-    val_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/val/', class_mode='categorical', batch_size=batch_size)
+    val_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/val/', class_mode='categorical',
+                                                      batch_size=batch_size)
     # Load and iterate test dataset
-    test_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/test/', class_mode='categorical', batch_size=batch_size)
+    test_it_ret = datagen_val_test.flow_from_directory('dataset/data_256/test/', class_mode='categorical',
+                                                       batch_size=batch_size, shuffle=False)
 
     return train_it_ret, val_it_ret, test_it_ret
 
@@ -128,7 +131,7 @@ def create_plots(history_plot):
     # Accuracy plot
     plt.plot(history_plot.history['accuracy'])
     plt.plot(history_plot.history['val_accuracy'])
-    plt.title(f'model {exp} accuracy')
+    plt.title(f'Model {exp} accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
@@ -138,7 +141,7 @@ def create_plots(history_plot):
     # Loss plot
     plt.plot(history_plot.history['loss'])
     plt.plot(history_plot.history['val_loss'])
-    plt.title(f'model {exp} loss')
+    plt.title(f'Model {exp} loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
@@ -177,24 +180,40 @@ def evaluate_model(model, test_generator):
     f.write(classification_report(test_generator.classes, predicted_class_indices, target_names=target_names))
     f.close()
 
-def create_confusion_matrix(model_cf, test_generator, metadata_info):
+
+def confusion_matrix(model, eval_gen):
+    """ Evaluate given model and print results.
+    Show validation loss and accuracy, classification report and
+    confusion matrix.
+
+    Args:
+        model (model): model to evaluate
+        eval_gen (ImageDataGenerator): evaluation generator
     """
-    This functions creates a confusion matrix for the test set
-    :param model_cf: model to evaluate
-    :param test_generator: image generator corresponding to test set
-    :param metadata_info: metadata of the dataset
-    :return:
-    """
-    # Compute probabilities
-    y_pred_aux = model_cf.predict(test_generator)
+    # Evaluate the model
+    eval_gen.reset()
+    score = model.evaluate(eval_gen, verbose=0)
+    print('\nLoss:', score[0])
+    print('Accuracy:', score[1])
+
+    # Confusion Matrix (validation subset)
+    eval_gen.reset()
+    pred = model.predict(eval_gen, verbose=0)
 
     # Assign most probable label
-    y_pred = np.argmax(y_pred_aux, axis=1)
+    predicted_class_indices = np.argmax(pred, axis=1)
 
-    # target_names = sorted(list(metadata_info['Medium'].unique()))
-    cf = confusion_matrix(np.argmax(test_generator, axis=1), y_pred)
-    plt.figure(figsize=(15, 12))
-    heatmap = sns.heatmap(cf, annot=True, cmap="Blues")
+    # Get class labels
+    labels = (eval_gen.class_indices)
+    target_names = labels.keys()
+
+    # Plot statistics
+    print(classification_report(eval_gen.classes, predicted_class_indices, target_names=target_names))
+
+    cf_matrix = confusion_matrix(np.array(eval_gen.classes), predicted_class_indices)
+    fig, ax = plt.subplots(figsize=(13, 13))
+    heatmap = sns.heatmap(cf_matrix, annot=True, cmap='PuRd', cbar=False, square=True, xticklabels=target_names,
+                          yticklabels=target_names)
     fig = heatmap.get_figure()
     fig.savefig('MAMe_confusion_matrix.pdf')
 
@@ -245,4 +264,4 @@ if __name__ == "__main__":
     evaluate_model(network.model, test_it)
 
     # Plot confusion  matrix
-    # create_confusion_matrix(network.model, test_it, metadata) # TODO: esto no deberíamos hacerlo antes con validation? dijo que test solo al final
+    confusion_matrix(network.model, test_it)
