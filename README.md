@@ -17,7 +17,7 @@ The MAMe dataset is originally introduced in the paper [The MAMe Dataset: On the
 
 Data is expected at the dataset folder. In this folder two other folders are expected:
 
-- data_256: All the images that are going to be used in the task. The _sort_dataset_folder_ is in charged of the sorting of this folder by considering the definitions stated in the metadata folder. The images can be found in the following [link](https://storage.hpai.bsc.es/mame-dataset/MAMe_data_256.zip)
+- data_256: All the images that are going to be used in the task. The _sort_dataset_folder_ is in charged of the sorting of this folder by considering the definitions stated in the metadata folder. The images can be found in the following [link](https://storage.hpai.bsc.es/mame-dataset/MAMe_data_256.zip).
 - MAMe_metada: Labels and information of each on of the images. A copy of this folder can be found in the docs folder.
 
 ## Architecture proposed 🏛
@@ -46,6 +46,8 @@ model.add(tf.keras.layers.Dense(29, activation='softmax'))
 Run mame_cnn.py in order to train the selected model (specified in the exp variable) or run ready_to_go_model.py to load and use an already trained model.
 
 ## Results 📊
+
+**Accuracy on test set: 0.737**
 
 ![Confusion Matrix](docs/images/MAMe_confusion_matrix.png)
 
