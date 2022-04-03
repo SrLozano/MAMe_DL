@@ -112,7 +112,7 @@ class CNN:
         return model
 
     def fit(self, train_data, validation_data, epochs):
-        history = self.model.fit(x=train_data, epochs=epochs, validation_data=validation_data, verbose=self.verbose)
+        history = self.model.fit(x=train_data, fit_epochs=epochs, validation_data=validation_data, verbose=self.verbose)
         return history
 
     def test(self, test_data):

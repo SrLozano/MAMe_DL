@@ -1,6 +1,5 @@
 import tensorflow as tf
 from keras.models import load_model
-from keras.models import model_from_json
 from mame_cnn import evaluate_model, create_confusion_matrix
 
 

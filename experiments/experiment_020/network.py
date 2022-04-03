@@ -74,7 +74,7 @@ class CNN:
     def fit(self, train_data, validation_data, epochs):
         early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=1e-4, patience=10, verbose=1, mode='auto',
                               restore_best_weights=True) #early stopping in case it overfits too much
-        history = self.model.fit(x=train_data, epochs=epochs, validation_data=validation_data, verbose=self.verbose, callbacks=[early])
+        history = self.model.fit(x=train_data, fit_epochs=epochs, validation_data=validation_data, verbose=self.verbose, callbacks=[early])
         return history
 
     def test(self, test_data):

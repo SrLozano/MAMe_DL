@@ -166,7 +166,7 @@ def evaluate_model(model, test_generator, experiment=True):
     if experiment:
         file = open(f'experiments/{exp}/test_info.txt', "a+")
     else:
-        file = open(f'model_evalutaion.txt', "a+")
+        file = open(f'model_evaluation.txt', "a+")
 
     file.write(f"\t - Loss: {str(score[0])} \n \t - Accuracy on test: {str(score[1])}\n")
 
@@ -216,9 +216,9 @@ def create_confusion_matrix(model, eval_gen, experiment=True):
     print(classification_report(eval_gen.classes, predicted_class_indices, target_names=target_names))
 
     cf_matrix = confusion_matrix(np.array(eval_gen.classes), predicted_class_indices)
-    fig, ax = plt.subplots(figsize=(13, 13))
-    heatmap = sns.heatmap(cf_matrix, annot=True, cmap='PuRd', cbar=False, square=True, xticklabels=target_names,
-                          yticklabels=target_names)
+    fig, ax = plt.subplots(figsize=(15, 15))
+    heatmap = sns.heatmap(cf_matrix, annot=False, cmap='Blues', cbar=True, square=False,
+                          xticklabels=target_names, yticklabels=target_names)
     fig = heatmap.get_figure()
 
     if experiment:
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     train_it, val_it, test_it = load_dataset(data_augmentation)
 
     # Define model structure
-    network = network.CNN(learning_rate=learning_rate, verbose=0, optimizer=optimizer, loss='categorical_crossentropy')
+    network = network.CNN(learning_rate=learning_rate, verbose=0, fit_optimizer=optimizer, loss='categorical_crossentropy')
 
     if verbose_level == 2:
         network.model.summary()  # Check model structure
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # Fit network
-    history = network.fit(train_it, val_it, epochs=epochs)
+    history = network.fit(train_it, val_it, fit_epochs=epochs)
 
     # Measure elapsed time
     end = time.time()
