@@ -16,13 +16,15 @@ from sklearn.metrics import classification_report, confusion_matrix
 import time
 
 from experiments.experiment_030 import network
-exp="experiment_030"
+
+exp = "experiment_030"
 
 data_augmentation = network.data_augmentation
 batch_size = network.batch_size
 learning_rate = network.lr
 epochs = network.epochs
 optimizer = network.optimizer
+
 
 def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
     """
@@ -85,7 +87,7 @@ def sort_dataset_folder(execute_image_sorting_bool, metadata_info):
                         # Move the image
                         move_image_to_cat = shutil.move(get_image,
                                                         f'dataset/data_256/{subset}/' + c.strip() + '/' + row['Image '
-                                                                                                      'file'])
+                                                                                                              'file'])
 
 
 def load_dataset(data_augmentation=False):
@@ -99,15 +101,15 @@ def load_dataset(data_augmentation=False):
 
     # Create a data generator
     if data_augmentation:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0,
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0,
                                                                         rotation_range=20,
                                                                         width_shift_range=0.1,
                                                                         height_shift_range=0.1,
                                                                         zoom_range=0.2,
                                                                         horizontal_flip=True)
     else:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
-    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
+    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
 
     # Load and iterate training dataset
     train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical',
@@ -148,11 +150,12 @@ def create_plots(history_plot):
     plt.savefig(f'experiments/{exp}/MAMe_loss.pdf')
 
 
-def evaluate_model(model, test_generator):
+def evaluate_model(model, test_generator, experiment=True):
     """
     This functions creates interesting metrics to check model performance
     :param model:  Model to evaluate
     :param test_generator: Test generator
+    :param experiment: Specifies whether ths actual run is an experiment
     :return: It saves the accuracy and loss plots
     """
 
@@ -160,9 +163,12 @@ def evaluate_model(model, test_generator):
     test_generator.reset()
     score = model.evaluate(test_generator, verbose=0)
 
-    f = open(f'experiments/{exp}/test_info.txt', "a+")
-    f.write(f"\t - Loss: {str(score[0])} \n \t - Accuracy on test: {str(score[1])}\n")
+    if experiment:
+        file = open(f'experiments/{exp}/test_info.txt', "a+")
+    else:
+        file = open(f'model_evalutaion.txt', "a+")
 
+    file.write(f"\t - Loss: {str(score[0])} \n \t - Accuracy on test: {str(score[1])}\n")
 
     # Confusion Matrix (validation subset)
     test_generator.reset()
@@ -176,20 +182,19 @@ def evaluate_model(model, test_generator):
     target_names = labels.keys()
 
     # Plot statistics
-    f.write("\n")
-    f.write(classification_report(test_generator.classes, predicted_class_indices, target_names=target_names))
-    f.close()
+    file.write("\n")
+    file.write(classification_report(test_generator.classes, predicted_class_indices, target_names=target_names))
+    file.close()
 
 
-def confusion_matrix(model, eval_gen):
-    """ Evaluate given model and print results.
-    Show validation loss and accuracy, classification report and
-    confusion matrix.
-
-    Args:
-        model (model): model to evaluate
-        eval_gen (ImageDataGenerator): evaluation generator
+def create_confusion_matrix(model, eval_gen, experiment=True):
     """
+    This function evaluates a model. It shows validation loss and accuracy, classification report and confusion matrix.
+    :param model: Model to evaluate
+    :param eval_gen: Evaluation generator
+    :param experiment: Specifies whether ths actual run is an experiment
+    """
+
     # Evaluate the model
     eval_gen.reset()
     score = model.evaluate(eval_gen, verbose=0)
@@ -204,7 +209,7 @@ def confusion_matrix(model, eval_gen):
     predicted_class_indices = np.argmax(pred, axis=1)
 
     # Get class labels
-    labels = (eval_gen.class_indices)
+    labels = eval_gen.class_indices
     target_names = labels.keys()
 
     # Plot statistics
@@ -215,7 +220,11 @@ def confusion_matrix(model, eval_gen):
     heatmap = sns.heatmap(cf_matrix, annot=True, cmap='PuRd', cbar=False, square=True, xticklabels=target_names,
                           yticklabels=target_names)
     fig = heatmap.get_figure()
-    fig.savefig('MAMe_confusion_matrix.pdf')
+
+    if experiment:
+        fig.savefig(f'experiments/{exp}/MAMe_confusion_matrix.pdf')
+    else:
+        fig.savefig('MAMe_confusion_matrix.pdf')
 
 
 if __name__ == "__main__":
@@ -250,7 +259,7 @@ if __name__ == "__main__":
 
     # Measure elapsed time
     end = time.time()
-    time_taken = (((end - start)/60)/60)
+    time_taken = (((end - start) / 60) / 60)
 
     # Create plots
     create_plots(history)
@@ -264,4 +273,4 @@ if __name__ == "__main__":
     evaluate_model(network.model, test_it)
 
     # Plot confusion  matrix
-    confusion_matrix(network.model, test_it)
+    create_confusion_matrix(network.model, test_it)
