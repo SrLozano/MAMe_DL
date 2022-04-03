@@ -1,23 +1,18 @@
 import os
+import time
 import shutil
-
+import numpy as np
+import pandas as pd
+import seaborn as sns
 import tensorflow as tf
 import keras
-import pandas as pd
-
 import matplotlib
 import matplotlib.pyplot as plt
-import seaborn as sns
-
-import numpy as np
-
 from sklearn.metrics import classification_report, confusion_matrix
 
-import time
+from experiments.experiment_031 import network
 
-from experiments.experiment_030 import network
-
-exp = "experiment_030"
+exp = "experiment_031"
 
 data_augmentation = network.data_augmentation
 batch_size = network.batch_size
@@ -101,15 +96,15 @@ def load_dataset(data_augmentation=False):
 
     # Create a data generator
     if data_augmentation:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0,
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0,
                                                                         rotation_range=20,
                                                                         width_shift_range=0.1,
                                                                         height_shift_range=0.1,
                                                                         zoom_range=0.2,
                                                                         horizontal_flip=True)
     else:
-        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
-    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255.0)
+        datagen_train = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
+    datagen_val_test = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255.0)
 
     # Load and iterate training dataset
     train_it_ret = datagen_train.flow_from_directory('dataset/data_256/train/', class_mode='categorical',
@@ -246,7 +241,8 @@ if __name__ == "__main__":
     train_it, val_it, test_it = load_dataset(data_augmentation)
 
     # Define model structure
-    network = network.CNN(learning_rate=learning_rate, verbose=0, fit_optimizer=optimizer, loss='categorical_crossentropy')
+    network = network.CNN(learning_rate=learning_rate, verbose=0, fit_optimizer=optimizer,
+                          loss='categorical_crossentropy')
 
     if verbose_level == 2:
         network.model.summary()  # Check model structure
@@ -259,7 +255,7 @@ if __name__ == "__main__":
 
     # Measure elapsed time
     end = time.time()
-    time_taken = (((end - start) / 60) / 60)
+    time_taken = (((end - start)/60)/60)
 
     # Create plots
     create_plots(history)
