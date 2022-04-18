@@ -13,6 +13,12 @@ The MAMe dataset is a novel image classification task focused on museum art medi
 
 Data from all museums is aggregated by art experts into 29 classes of mediums (i.e., materials and techniques).
 
+![Data Exploration](docs/images/show_images.png)
+
+The dataset contains the following distribution:
+
+![Data Exploration 2](docs/images/data_exploration.png)
+
 The MAMe dataset is originally introduced in the paper [The MAMe Dataset: On the relevance of High Resolution and Variable Shape image properties](https://arxiv.org/abs/2007.13693). Although here in this project only 256x256 images version of the dataset is considered, the original MAMe dataset with high-resolution images of variable shape can be download from its oficial [website](https://storage.hpai.bsc.es/mame-dataset/MAMe_data.zip). Additionally, a set of baseline models and code used to train them is available in the oficial github [repository](https://github.com/HPAI-BSC/MAMe-baselines).
 
 Data is expected at the dataset folder. In this folder two other folders are expected:

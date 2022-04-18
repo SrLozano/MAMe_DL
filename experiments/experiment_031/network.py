@@ -69,7 +69,7 @@ class CNN:
             fit_optimizer = tf.keras.optimizers.SGD(learning_rate=self.learning_rate, momentum=0.9, decay=lr/epochs)
         elif self.optimizer == "RMSprop":
             fit_optimizer = tf.keras.optimizers.RMSprop(learning_rate=self.learning_rate, decay=lr/epochs)
-        else:
+        else:  # Adam
             fit_optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate, epsilon=1e-8, amsgrad=True)
 
         model.compile(optimizer=fit_optimizer, loss=self.loss, metrics=['accuracy'])

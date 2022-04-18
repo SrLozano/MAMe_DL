@@ -13,6 +13,7 @@ optimizer = "SGD"
 weight_decay = 1e-4
 momentum = 0.9
 num_layers = 4
+
 class CNN:
     def __init__(self, learning_rate, verbose, optimizer, loss):
         # Add the needed parameters
