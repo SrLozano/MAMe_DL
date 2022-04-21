@@ -1,9 +1,0 @@
-Notas: with normalization False, we have added dropout to avoid that much of overfitting. 
-
-
-Parámetros: learning rate = 0.001. Momentum = 0.9. Weight decay= None. Batch size = 32.
-
-Análisis de resultados: still so much overfiting. 
-
-
-Ideas de mejora: regularizers--> L2, also we should increase the network complexity because it is not learning enough. So, 5-layer network with L2 regularizer (to try to fight against overfitting). We maintain dropout.

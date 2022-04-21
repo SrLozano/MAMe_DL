@@ -1,1 +1,0 @@
-idem que l'anterior pperò he canviat el tamañ dels kernels a (5,5), puede que overfitee, pk será más complejo (más weights), pero vaya que si la accuracy sube ya luego corregimos el overfitting con data aug, regularizers etc etc, subiendo el LR etc..
